@@ -3,12 +3,28 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const fileUpload = require('express-fileupload');
+var bodyParser = require('body-parser')
+process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var fileUploadRouter = require('./routes/fileUpload');
-
+var loginRouter = require('./routes/login');
+var updateRouter = require('./routes/update');
+var updatekbisRouter = require('./routes/updatekbis');
+var updatedocRouter = require('./routes/updatedoc');
+var getdocRouter = require('./routes/getdoc');
+var adminRouter = require('./routes/admin');
+var clientRouter = require('./routes/client');
+var uploadbillRouter = require('./routes/uploadbill');
+var getbillRouter = require('./routes/getbill')
+var getbilltoRouter = require('./routes/getbillto')
+var logoRouter = require('./routes/logo');
+var profilRouter = require('./routes/profil');
+var adminClientsRouter= require('./routes/adminclients');
+var checkfactureRouter = require('./routes/checkfacture');
+var contactRouter = require('./routes/contact');
 var app = express();
 
 // view engine setup
@@ -19,22 +35,35 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Origin", "https://192.168.99.42:8000");
+  res.header("Access-Control-Allow-Headers", "*");
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Allow-Origin-With-Credentials");
-  res.header("Access-Control-Allow-Methods", "POST,PUT,GET,OPTIONS,DELETE")
+  res.header("Access-Control-Allow-Methods","GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONS,TRACE,PATCH")
   next();
 });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/fileUpload', fileUploadRouter);
-app.use(fileUpload());
-
-
+app.use('/login', loginRouter);
+app.use('/update', updateRouter);
+app.use('/updatekbis', updatekbisRouter);
+app.use('/updatedoc', updatedocRouter);
+app.use('/getdoc', getdocRouter);
+app.use('/admin', adminRouter);
+app.use('/client', clientRouter);
+app.use('/uploadbill', uploadbillRouter);
+app.use('/getbill', getbillRouter);
+app.use('/getbillto', getbilltoRouter);
+app.use('/logo', logoRouter);
+app.use('/profil', profilRouter);
+app.use('/adminclients', adminClientsRouter);
+app.use('/checkfacture', checkfactureRouter);
+app.use('/contact', contactRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
