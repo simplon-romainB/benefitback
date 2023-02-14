@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser')
-process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
+
 
 
 var indexRouter = require('./routes/index');
@@ -25,6 +25,11 @@ var profilRouter = require('./routes/profil');
 var adminClientsRouter= require('./routes/adminclients');
 var checkfactureRouter = require('./routes/checkfacture');
 var contactRouter = require('./routes/contact');
+var pushRouter = require('./routes/push');
+var usersSiretRouter = require('./routes/usersSiret');
+var sendmailRouter = require('./routes/sendmail')
+var dlfilesRouter = require('./routes/dlfiles')
+var dlbillRouter = require('./routes/dlbill')
 var app = express();
 
 // view engine setup
@@ -37,9 +42,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('uploads'))
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://192.168.99.42:8000");
-  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.header("Access-Control-Allow-Headers", "authorization, content-type");
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Allow-Origin-With-Credentials");
   res.header("Access-Control-Allow-Methods","GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONS,TRACE,PATCH")
@@ -64,6 +70,12 @@ app.use('/profil', profilRouter);
 app.use('/adminclients', adminClientsRouter);
 app.use('/checkfacture', checkfactureRouter);
 app.use('/contact', contactRouter);
+app.use('/push', pushRouter);
+app.use('/usersSiret', usersSiretRouter);
+app.use('/sendmail', sendmailRouter);
+app.use('/dlfiles', dlfilesRouter);
+app.use('/dlbill', dlbillRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

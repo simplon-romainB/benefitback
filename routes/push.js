@@ -1,18 +1,25 @@
+var express = require('express');
+var router = express.Router();
 const webpush = require('web-push');
 
-const vapidKeys = { // new
-    publicKey: 'BHcuDDWF_B0YMZvR1Zp7-mipyFB4OcPSkG14RFW6tqLPJ8q4qe7ev7TSJliJi7pBKw1-0tqFqvP8s7J6BK49M_A', // new
-    privateKey: 'WOkg-DwQGhNYUBUG_7vrH1ZTaOE_zpr2hx6ECmblcFM' // new
-  };
 
-  const subscription = {
-    endpoint: '',
-    expirationTime: null,
-    keys: {
-        auth: '',
-        p256dh: '',
-    },
-};
+
+router.get('/',(req, res, next) =>{
+
+
+    const vapidKeys = { // new
+        publicKey: 'BNzNoUKBPzr1FgZxVFbk__q8BdnICtjib4kWnouSkSxUcsiIN_O2uItaRJGlmh4iLJWoZmRdFDUgwAKq25WOK3A', // new
+        privateKey: 'ifHu4FVHEnlQmQZUvySL6A2wqaKarnrDie6FXXyYbCo' // new
+      };
+    
+    const subscription = {
+        endpoint:"https://updates.push.services.mozilla.com/wpush/v2/gAAAAABjvqQuosRxHQ-OctA6xg7pmxatYhbE96cS99yIDcRAsM5JrZX6mwmecx_OfDwyi5uKi2tdFGA1EA3nu3kHa4S4h-dXdjSVIiTN2WoTegUw7ghplnCJ1Kf71jdR8BNXflzA10FcNlZqXvoS4lijYzbHknEk8IZfosQ8oVocQFHQ7NBc_WI",
+        expirationTime: null,
+        keys: {
+            auth: 'y73UGnXHwB2U-xWEKf5Ezg',
+            p256dh: 'BB0JbmewEYL4Y7M5NRALuGCNVgSMPTJa5FDfxQvQ2RCiO0fpSo6fPV42ry6MLDbUkj3rt8EU9lboDDWwFgy6kRg',
+        },
+    };
 
 const payload = {
     notification: {
@@ -55,4 +62,6 @@ webpush.sendNotification(subscription, JSON.stringify(payload), options)
     .catch((_) => {
         console.log(_);
     });
+});
 
+module.exports = router;

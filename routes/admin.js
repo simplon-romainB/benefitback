@@ -35,5 +35,21 @@ router.post('/',(req, res, next) =>{
     });
 });
 
+router.put('/',(req, res, next) =>{ 
+    
+    const comparison = jwt.verify(req.header('authorization'), secret)
+    if (comparison === false) {
+        return res.status(401).send(error)
+       }
+    else {
+      var salt = bcrypt.genSaltSync(10);
+      var hash = bcrypt.hashSync(req.body.password, salt);
+      const profRequete = 'UPDATE admin SET nom = ?,prenom = ?, telephone = ?,password = ? WHERE email = ?'
+      const params = [req.body.nom, req.body.prenom, req.body.telephone,hash, req.body.email]
+      const request =  connection.query(profRequete, params, (err, response) => {
+        res.send(response)
+      })
+     }
+ })
 
 module.exports = router;

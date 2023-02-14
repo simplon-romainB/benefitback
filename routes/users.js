@@ -1,14 +1,15 @@
 const superagent = require('superagent');
+const jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var express = require('express');
 const mailgun = require("mailgun-js");
 var router = express.Router();
-var domain = "sandboxaf7abc0fe7bd4fdba52036c9c49e904b.mailgun.org";
-var apiKey = "9c583fcef7f94108654d17400737ae7d-2de3d545-6f854056";
+var domain = "sandboxd6a0305b58a547febd8cb23b89d0fd32.mailgun.org";
+var apiKey = "9b92e952daf94ce95ae71510b84e08f1-d1a07e51-2c9dc59b";
 const mg = mailgun({apiKey: apiKey, domain: domain});
 const mysql = require('mysql')
 const multer  = require('multer')
-const upload = multer({ dest: '../' })
+const upload = multer({ dest: '/uploads' })
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -16,7 +17,7 @@ const connection = mysql.createConnection({
   database: 'benefit'
 });
   const secretKey = "6Ld4jTIjAAAAAPQVwX3ZreT3Qm2N11fLwWvw8sB5"
-
+  const secret = "secret"
 
 
 /* inscription */
@@ -27,15 +28,11 @@ router.post('/',upload.single('thumbnail'), function(req, res, next) {
   .end((err, res) => {
   if (err) { return console.log(err); }
   console.log(res.body);
-  if (res.body.success) {
-
- 
-
-    
+  if (res.body.success) {  
   var salt = bcrypt.genSaltSync(10);
   var hash = bcrypt.hashSync(req.body.password, salt);
   var activateLink = Math.round(Math.random()*1000)
-  var values = [ req.body.siret,  req.body.siren, req.body.nom, req.body.adresse, req.body.email, req.body.nomdirigeant, req.body.prenomdirigeant, req.file?.path,hash, activateLink]
+  var values = [ req.body.siret,  req.body.siren, req.body.nom, req.body.adresse, req.body.email, req.body.nomdirigeant, req.body.prenomdirigeant, req.file?.filename,hash, activateLink]
   const requete = 'INSERT INTO client (SIRET,SIREN,denomination,adresse,email, Nom,Prenom, Kbis, password,role, activate, activatelink) VALUES (?,?,?,?,?,?,?,?,?, "user", false, ?)'
   const request = connection.query(requete, values)
   
@@ -45,15 +42,11 @@ router.post('/',upload.single('thumbnail'), function(req, res, next) {
     from: "mailgun@" + domain ,
     to: req.body.email,
     subject: 'email verification',
-    html: "<p>please click this<a href = "+ link + ">link</a>to activate your account</p>"
+    html: "<p>Cliquez sur ce<a href = "+ link + ">lien</a> pour activer votre compte</p>"
   };
   mg.messages().send(data, function (error, body2) {
     console.log(body2);
   });
-//}
-
-
-
 router.get('/verify', (req,res,next) =>{ 
   const params = [req.query.email]
   const requete = 'SELECT activatelink FROM client WHERE email = ?'
@@ -76,5 +69,36 @@ else {
 }
 });
 });
+
+router.put('/', (req,res,next) =>{ 
+  const comparison = jwt.verify(req.header('authorization'), secret)
+    if (comparison === false) {
+        return res.status(401).send(error)
+       }
+    else {
+      const siret = (req.query.siret).slice(0,9)
+      const params = [req.query.siret, siret, req.query.email ] 
+      const requete2 = 'UPDATE client SET SIRET = ( CASE WHEN  SIRET = "" THEN ? END) , SIREN = ( CASE WHEN SIREN = "" THEN  ? END) WHERE email = ?'
+      const request2 = connection.query(requete2, params, (response)=> {
+        res.send(response)
+        
+      })
+    }
+  })
+
+router.delete('/', (req,res,next) =>{ 
+  const comparison = jwt.verify(req.header('authorization'), secret)
+    if (comparison === false) {
+        return res.status(401).send(error)
+       }
+    else {
+      const params = [req.query.email] 
+      const requete2 = 'DELETE FROM client WHERE email = ?'
+      const request2 = connection.query(requete2, params, (response)=> {
+        res.send(response)
+        
+      })
+    }
+})
 
 module.exports = router;

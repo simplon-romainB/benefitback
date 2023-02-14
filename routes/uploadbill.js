@@ -4,7 +4,7 @@ var router = express.Router();
 const mysql = require('mysql')
 const jwt = require('jsonwebtoken');
 const multer  = require('multer')
-const upload = multer({ dest: '../' })
+const upload = multer({ dest: './uploads' })
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -22,10 +22,9 @@ router.post('/',upload.single('pdf'),(req, res, next) =>{
        }
     else {
     const profRequete = 'INSERT INTO factures (siret, path, numero, email) VALUES (?,?,?,?)'
-    const email = [req.body.siret,req.file.path, req.body.numero, req.body.email]
+    const email = [req.body.siret,req.file.filename, req.body.numero, req.body.email]
     const request =  connection.query(profRequete, email, (err, response) => {
       res.send(response)
-      console.log(req.file)
       });
     }
     });

@@ -4,7 +4,7 @@ var router = express.Router();
 const mysql = require('mysql')
 const jwt = require('jsonwebtoken');
 const multer  = require('multer')
-const upload = multer({ dest: '../' })
+const upload = multer({ dest: './uploads' })
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -22,10 +22,10 @@ router.post('/',upload.single('logo'),(req, res, next) =>{
        }
     else {
     const profRequete = 'INSERT INTO logo (nom, email, path, date) VALUES (?,?,?,DEFAULT) ON DUPLICATE KEY UPDATE path = ?'
-    const email = [req.file.originalname,req.body.email, req.file.path, req.file.path]
+    const email = [req.file.originalname,req.body.email, req.file.filename, req.file.path]
     const request =  connection.query(profRequete, email, (err, response) => {
       res.send(response)
-      console.log(req.file)
+      
       });
     }
     });
@@ -40,7 +40,7 @@ router.get('/',(req, res, next) =>{
     const email = [req.query.email]
     const request =  connection.query(profRequete, email, (err, response) => {
       res.send(response)
-      
+      console.log(response)
         });
       }
       });

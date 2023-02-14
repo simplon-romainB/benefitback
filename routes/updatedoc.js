@@ -4,7 +4,7 @@ var router = express.Router();
 const mysql = require('mysql')
 const jwt = require('jsonwebtoken');
 const multer  = require('multer')
-const upload = multer({ dest: '../' })
+const upload = multer({ dest: './uploads' })
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -22,7 +22,7 @@ router.post('/',upload.single('thumbnail'),(req, res, next) =>{
        }
     else {
     const profRequete = 'INSERT INTO documents (nom, email, path, date) VALUES (?,?,?,DEFAULT)'
-    const email = [req.file.originalname,req.body.email, req.file.path]
+    const email = [req.file.originalname,req.body.email, req.file.filename]
     const request =  connection.query(profRequete, email, (err, response) => {
       res.send(response)
       console.log(req.file)

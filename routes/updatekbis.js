@@ -4,7 +4,7 @@ var router = express.Router();
 const mysql = require('mysql')
 const jwt = require('jsonwebtoken');
 const multer  = require('multer')
-const upload = multer({ dest: '../' })
+const upload = multer({ dest: './uploads' })
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -22,7 +22,7 @@ router.post('/',upload.single('kbis'),(req, res, next) =>{
        }
     else {
     const profRequete = 'UPDATE client SET Kbis = ? WHERE siret = ?'
-    const email = [req.file.path,req.body.siret]
+    const email = [req.file.filename,req.body.siret]
     const request =  connection.query(profRequete, email, (err, response) => {
         res.send('ok')
     

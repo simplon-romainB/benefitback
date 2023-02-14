@@ -1,10 +1,9 @@
 const superagent = require('superagent');
-var bcrypt = require('bcryptjs');
 var express = require('express');
 const mailgun = require("mailgun-js");
 var router = express.Router();
-var domain = "sandboxaf7abc0fe7bd4fdba52036c9c49e904b.mailgun.org";
-var apiKey = "9c583fcef7f94108654d17400737ae7d-2de3d545-6f854056";
+var domain = "sandboxd6a0305b58a547febd8cb23b89d0fd32.mailgun.org";
+var apiKey = "9b92e952daf94ce95ae71510b84e08f1-d1a07e51-2c9dc59b";
 const mg = mailgun({apiKey: apiKey, domain: domain});
 const mysql = require('mysql')
 const multer  = require('multer')
