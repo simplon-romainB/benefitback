@@ -25,7 +25,6 @@ router.post('/',upload.single('logo'),(req, res, next) =>{
     const email = [req.file.originalname,req.body.email, req.file.filename, req.file.path]
     const request =  connection.query(profRequete, email, (err, response) => {
       res.send(response)
-      
       });
     }
     });

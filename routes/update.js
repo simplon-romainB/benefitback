@@ -21,8 +21,8 @@ router.post('/',(req, res, next) =>{
     else {
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(req.body.password, salt);
-    const profRequete = 'UPDATE client SET password = ?, Nom = ?, Prenom = ? WHERE siret = ?'
-    const email = [hash, req.body.nom, req.body.prenom,req.body.siret]
+    const profRequete = 'UPDATE client SET password = ?, Nom = ?, Prenom = ?, SIRET = ?, SIREN = ? WHERE email = ?'
+    const email = [hash, req.body.nom, req.body.prenom,req.body.siret,req.body.siren,req.body.email]
     const request =  connection.query(profRequete, email, (err, response) => {
     
     

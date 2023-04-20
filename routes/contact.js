@@ -8,6 +8,7 @@ const mg = mailgun({apiKey: apiKey, domain: domain});
 const mysql = require('mysql')
 const multer  = require('multer')
 const upload = multer({ dest: '../' })
+var nodemailer = require('nodemailer')
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -25,18 +26,23 @@ router.post('/', function(req, res, next) {
   superagent.get(url)
   .end((err, res) => {
   if (err) { return console.log(err); }
-  console.log(res.body);
   if (res.body.success) {
   
-  const data = {
-    from: "mailgun@" + domain ,
-    to: "romain.barry69@gmail.com",
-    subject: 'contact',
-    html: req.body.message
-  };
-  mg.messages().send(data, function (error, body2) {
-    console.log(body2);
-  });
+    let transporter = nodemailer.createTransport({
+      host: "node54-eu.n0c.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: 'romain.barry@yysh.fr', // generated ethereal user
+        pass: 'Magicstar198.', // generated ethereal password
+      },
+    })
+    let info = transporter.sendMail({
+      from: 'romain.barry@yysh.fr', // sender address
+      to: "romain.barry69@gmail.com",// list of receivers
+      subject: "Hello ✔", // Subject line
+      html: req.body.message + ' ' +req.body.email, // html body
+    });
 
 
 }
